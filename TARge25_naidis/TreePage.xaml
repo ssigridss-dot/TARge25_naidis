@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="TARge25_naidis.TreePage"
+    Title="Puu">
+
+    <NavigationPage.TitleView>
+
+        <Label
+            Text="Puu"
+            TextColor="Black"
+            FontSize="20"
+            FontAttributes="Bold"
+            VerticalOptions="Center" />
+
+    </NavigationPage.TitleView>
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="15"
+            Spacing="12">
+
+            <!-- PEALKIRI -->
+
+            <Label
+                Text="🌳 Puu hooajad ja elutsükkel"
+                FontSize="26"
+                FontAttributes="Bold"
+                TextColor="Black"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center" />
+
+            <Label
+                x:Name="infoLabel"
+                Text="Vali tegevus ja vajuta Käivita."
+                FontSize="18"
+                TextColor="Black"
+                HorizontalTextAlignment="Center" />
+
+            <!-- PUU ALA -->
+
+            <AbsoluteLayout
+                x:Name="puuAla"
+                HeightRequest="420"
+                BackgroundColor="#DDF3FF">
+
+                <!-- PÄIKE -->
+
+                <BoxView
+                    x:Name="paike"
+                    Color="#FFD54F"
+                    WidthRequest="65"
+                    HeightRequest="65"
+                    CornerRadius="33"
+                    AbsoluteLayout.LayoutBounds="0.85,0.12,65,65"
+                    AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                <!-- KOGU PUU -->
+
+                <AbsoluteLayout
+                    x:Name="puu"
+                    WidthRequest="250"
+                    HeightRequest="350"
+                    AbsoluteLayout.LayoutBounds="0.5,0.95,250,350"
+                    AbsoluteLayout.LayoutFlags="PositionProportional">
+
+                    <!-- TÜVI -->
+
+                    <BoxView
+                        x:Name="puuTüvi"
+                        Color="#795548"
+                        WidthRequest="60"
+                        HeightRequest="190"
+                        CornerRadius="10"
+                        AbsoluteLayout.LayoutBounds="0.5,0.95,60,190"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <!-- VÕRA 1 -->
+
+                    <BoxView
+                        x:Name="võra1"
+                        Color="#4CAF50"
+                        WidthRequest="150"
+                        HeightRequest="130"
+                        CornerRadius="65"
+                        AbsoluteLayout.LayoutBounds="0.35,0.28,150,130"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <!-- VÕRA 2 -->
+
+                    <BoxView
+                        x:Name="võra2"
+                        Color="#43A047"
+                        WidthRequest="160"
+                        HeightRequest="140"
+                        CornerRadius="70"
+                        AbsoluteLayout.LayoutBounds="0.65,0.30,160,140"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <!-- VÕRA 3 -->
+
+                    <BoxView
+                        x:Name="võra3"
+                        Color="#388E3C"
+                        WidthRequest="170"
+                        HeightRequest="135"
+                        CornerRadius="65"
+                        AbsoluteLayout.LayoutBounds="0.5,0.10,170,135"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <!-- ÕUNAD -->
+
+                    <BoxView
+                        x:Name="oun1"
+                        Color="#E53935"
+                        WidthRequest="25"
+                        HeightRequest="25"
+                        CornerRadius="13"
+                        IsVisible="False"
+                        AbsoluteLayout.LayoutBounds="0.28,0.35,25,25"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <BoxView
+                        x:Name="oun2"
+                        Color="#E53935"
+                        WidthRequest="25"
+                        HeightRequest="25"
+                        CornerRadius="13"
+                        IsVisible="False"
+                        AbsoluteLayout.LayoutBounds="0.70,0.40,25,25"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <BoxView
+                        x:Name="oun3"
+                        Color="#E53935"
+                        WidthRequest="25"
+                        HeightRequest="25"
+                        CornerRadius="13"
+                        IsVisible="False"
+                        AbsoluteLayout.LayoutBounds="0.50,0.22,25,25"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <!-- ÕIED -->
+
+                    <BoxView
+                        x:Name="õis1"
+                        Color="#F48FB1"
+                        WidthRequest="28"
+                        HeightRequest="28"
+                        CornerRadius="14"
+                        IsVisible="False"
+                        AbsoluteLayout.LayoutBounds="0.28,0.35,28,28"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <BoxView
+                        x:Name="õis2"
+                        Color="#F06292"
+                        WidthRequest="28"
+                        HeightRequest="28"
+                        CornerRadius="14"
+                        IsVisible="False"
+                        AbsoluteLayout.LayoutBounds="0.70,0.40,28,28"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <BoxView
+                        x:Name="õis3"
+                        Color="#EC407A"
+                        WidthRequest="28"
+                        HeightRequest="28"
+                        CornerRadius="14"
+                        IsVisible="False"
+                        AbsoluteLayout.LayoutBounds="0.50,0.22,28,28"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <BoxView
+                        x:Name="õis4"
+                        Color="#F8BBD0"
+                        WidthRequest="28"
+                        HeightRequest="28"
+                        CornerRadius="14"
+                        IsVisible="False"
+                        AbsoluteLayout.LayoutBounds="0.45,0.45,28,28"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                </AbsoluteLayout>
+
+            </AbsoluteLayout>
+
+            <!-- TEGEVUS -->
+
+            <Label
+                Text="Tegevus:"
+                FontSize="16"
+                TextColor="Black" />
+
+            <Picker
+                x:Name="tegevusePicker"
+                Title="Vali tegevus"
+                FontSize="18">
+
+                <Picker.Items>
+                    <x:String>Kasva</x:String>
+                    <x:String>Õitse</x:String>
+                    <x:String>Värise</x:String>
+                    <x:String>Langeta</x:String>
+                </Picker.Items>
+
+            </Picker>
+
+            <!-- NUPUD -->
+
+            <HorizontalStackLayout
+                HorizontalOptions="Fill"
+                Spacing="10">
+
+                <Button
+                    x:Name="käivitaNupp"
+                    Text="▶ Käivita"
+                    Clicked="OnActionClicked"
+                    FontSize="18"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HorizontalOptions="FillAndExpand" />
+
+                <Button
+                    x:Name="resetNupp"
+                    Text="🔄 Lähtesta"
+                    Clicked="OnResetClicked"
+                    FontSize="18"
+                    BackgroundColor="#78909C"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HorizontalOptions="FillAndExpand" />
+
+            </HorizontalStackLayout>
+
+            <!-- LÄBIPAISTVUS -->
+
+            <Label
+                Text="Lehestiku läbipaistvus:"
+                FontSize="16"
+                TextColor="Black" />
+
+            <Slider
+                x:Name="lehistikuSlider"
+                Minimum="0"
+                Maximum="1"
+                Value="1"
+                ValueChanged="OnSliderChanged" />
+
+            <!-- KIIRUS -->
+
+            <Label
+                Text="Animatsiooni aeg (ms):"
+                FontSize="16"
+                TextColor="Black" />
+
+            <HorizontalStackLayout
+                HorizontalOptions="Center"
+                Spacing="15">
+
+                <Label
+                    Text="Kiirus:"
+                    FontSize="18"
+                    TextColor="Black"
+                    VerticalOptions="Center" />
+
+                <Stepper
+                    x:Name="kiiruseStepper"
+                    Minimum="500"
+                    Maximum="2000"
+                    Increment="250"
+                    Value="1000"
+                    ValueChanged="OnStepperChanged" />
+
+                <Label
+                    x:Name="kiiruseLabel"
+                    Text="1000 ms"
+                    FontSize="18"
+                    TextColor="Black"
+                    VerticalOptions="Center" />
+
+            </HorizontalStackLayout>
+
+            <!-- KUUPÄEV -->
+
+            <Label
+                Text="Virtuaalne kuupäev:"
+                FontSize="16"
+                TextColor="Black" />
+
+            <DatePicker
+                x:Name="kuupaevPicker"
+                Format="dd.MM.yyyy" />
+
+            <!-- KELLAAEG -->
+
+            <Label
+                Text="Virtuaalne kellaaeg:"
+                FontSize="16"
+                TextColor="Black" />
+
+            <TimePicker
+                x:Name="kellaaegPicker"
+                Format="HH:mm" />
+
+            <Label
+                Text="Langetada saab ainult talvel ja valgel ajal (08:00–17:00)."
+                FontSize="14"
+                TextColor="DarkGreen"
+                HorizontalTextAlignment="Center"
+                Margin="0,5,0,15" />
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>
