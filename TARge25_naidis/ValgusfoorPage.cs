@@ -18,9 +18,18 @@ namespace TARge25_naidis
         // Kas foor on sisse lülitatud?
         private bool foorOn = false;
 
+        // Kas automaatrežiim töötab?
+        private bool automaatrežiim = false;
+
+        // Automaatrežiimi peatamiseks
+        private CancellationTokenSource automaatTühistus;
+
         public ValgusfoorPage()
         {
             Title = "Valgusfoor";
+
+            // ÜLEMINE LEHE PEALKIRI
+
             Label tiitliTekst = new Label
             {
                 Text = "Valgusfoor",
@@ -148,7 +157,7 @@ namespace TARge25_naidis
                 BackgroundColor = Colors.Green,
                 TextColor = Colors.White,
                 CornerRadius = 10,
-                WidthRequest = 130
+                WidthRequest = 120
             };
 
             sisseNupp.Clicked += (sender, e) =>
@@ -165,7 +174,7 @@ namespace TARge25_naidis
                 BackgroundColor = Colors.Red,
                 TextColor = Colors.White,
                 CornerRadius = 10,
-                WidthRequest = 130
+                WidthRequest = 120
             };
 
             väljaNupp.Clicked += (sender, e) =>
@@ -173,13 +182,32 @@ namespace TARge25_naidis
                 FoorVälja();
             };
 
-            // NUPPUDE PAIGUTUS
+            // AUTOMAATREŽIIMI NUPP
+
+            Button automaatNupp = new Button
+            {
+                Text = "Automaatrežiim",
+                FontSize = 18,
+                BackgroundColor = Colors.DarkOrange,
+                TextColor = Colors.White,
+                CornerRadius = 10,
+                WidthRequest = 260,
+                HeightRequest = 55,
+                HorizontalOptions = LayoutOptions.Center
+            };
+
+            automaatNupp.Clicked += async (sender, e) =>
+            {
+                await AlustaAutomaatrežiimi();
+            };
+
+            // SISSE/VÄLJA NUPPUDE PAIGUTUS
 
             HorizontalStackLayout nupud = new HorizontalStackLayout
             {
-                Spacing = 20,
+                Spacing = 15,
                 HorizontalOptions = LayoutOptions.Center,
-                Margin = new Thickness(0, 15, 0, 20)
+                Margin = new Thickness(0, 15, 0, 5)
             };
 
             nupud.Children.Add(sisseNupp);
@@ -199,6 +227,7 @@ namespace TARge25_naidis
             fooriPaigutus.Children.Add(post);
             fooriPaigutus.Children.Add(postiAlus);
             fooriPaigutus.Children.Add(nupud);
+            fooriPaigutus.Children.Add(automaatNupp);
 
             // GRID
 
@@ -210,8 +239,7 @@ namespace TARge25_naidis
             // Teine kiht = valgusfoor
             ekraan.Children.Add(fooriPaigutus);
 
-
-            // Grid ekraanil
+            // Kuvame ekraanil
             Content = ekraan;
 
             // TULEDE KLIKKIMINE
@@ -221,14 +249,19 @@ namespace TARge25_naidis
             LisaRoheliseKlõps();
         }
 
-
         // FOORI SISSELÜLITAMINE
 
         private void FoorSisse()
         {
+            // Kui automaatrežiim töötab, peatame selle
+            if (automaatrežiim)
+            {
+                automaatTühistus?.Cancel();
+                automaatrežiim = false;
+            }
+
             foorOn = true;
 
-            // Õiged värvid
             punane.Color = Colors.Red;
             kollane.Color = Colors.Yellow;
             roheline.Color = Colors.Green;
@@ -240,14 +273,151 @@ namespace TARge25_naidis
 
         private void FoorVälja()
         {
+            // Peatame automaatrežiimi
+            automaatTühistus?.Cancel();
+
+            automaatrežiim = false;
             foorOn = false;
 
-            // Kõik tuled muutuvad halliks
+            // Kõik tuled halliks
             punane.Color = Colors.Gray;
             kollane.Color = Colors.Gray;
             roheline.Color = Colors.Gray;
 
+            // Näitame tulesid uuesti
+            punane.Opacity = 1;
+            kollane.Opacity = 1;
+            roheline.Opacity = 1;
+
             pealkiri.Text = "Lülita foor sisse";
+        }
+
+        // AUTOMAATREŽIIM
+
+        private async Task AlustaAutomaatrežiimi()
+        {
+            // Kui automaatrežiim juba töötab, siis ei käivitata teist tsüklit
+            if (automaatrežiim)
+            {
+                return;
+            }
+
+            foorOn = true;
+            automaatrežiim = true;
+
+            automaatTühistus = new CancellationTokenSource();
+
+            CancellationToken token = automaatTühistus.Token;
+
+            try
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    // PÄEVAREŽIIM
+
+                    pealkiri.Text = "Päevarežiim";
+
+                    // PUNANE
+                    punane.Color = Colors.Red;
+                    kollane.Color = Colors.Gray;
+                    roheline.Color = Colors.Gray;
+
+                    await punane.ScaleTo(1.2, 300);
+                    await punane.ScaleTo(1.0, 300);
+
+                    await Task.Delay(1400, token);
+
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    // KOLLANE
+                    punane.Color = Colors.Gray;
+                    kollane.Color = Colors.Yellow;
+                    roheline.Color = Colors.Gray;
+
+                    await kollane.ScaleTo(1.2, 300);
+                    await kollane.ScaleTo(1.0, 300);
+
+                    await Task.Delay(1400, token);
+
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    // ROHELINE
+                    punane.Color = Colors.Gray;
+                    kollane.Color = Colors.Gray;
+                    roheline.Color = Colors.Green;
+
+                    await roheline.ScaleTo(1.2, 300);
+                    await roheline.ScaleTo(1.0, 300);
+
+                    await Task.Delay(1400, token);
+
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    // ÖÖREŽIIM
+
+                    pealkiri.Text = "Öörežiim";
+
+                    // Kõik peale kollase välja
+                    punane.Color = Colors.Gray;
+                    roheline.Color = Colors.Gray;
+                    kollane.Color = Colors.Yellow;
+
+                    // Kollane hakkab vilkuma(u 4sek)
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (token.IsCancellationRequested)
+                        {
+                            break;
+                        }
+
+                        // Kollane nähtavaks
+                        await kollane.FadeTo(1, 300);
+
+                        await kollane.ScaleTo(1.15, 200);
+                        await kollane.ScaleTo(1.0, 200);
+
+                        await Task.Delay(500, token);
+
+                        if (token.IsCancellationRequested)
+                        {
+                            break;
+                        }
+
+                        // Kollane tumedaks
+                        await kollane.FadeTo(0.2, 300);
+
+                        await Task.Delay(500, token);
+                    }
+
+                    // Pärast öörežiimi muutub kollane jälle nähtavaks
+                    kollane.Opacity = 1;
+
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    // Tsükli järgmine ring: päev, öö, päev
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                // Automaatrežiim peatati nupuga "Sisse" või "Välja".
+            }
+            finally
+            {
+                automaatrežiim = false;
+            }
         }
 
         // PUNASE TULE KLIKK
@@ -258,7 +428,7 @@ namespace TARge25_naidis
 
             klõps.Tapped += async (sender, e) =>
             {
-                if (foorOn)
+                if (foorOn && !automaatrežiim)
                 {
                     pealkiri.Text = "Seisa";
 
@@ -278,7 +448,7 @@ namespace TARge25_naidis
 
             klõps.Tapped += async (sender, e) =>
             {
-                if (foorOn)
+                if (foorOn && !automaatrežiim)
                 {
                     pealkiri.Text = "Valmistu";
 
@@ -298,7 +468,7 @@ namespace TARge25_naidis
 
             klõps.Tapped += async (sender, e) =>
             {
-                if (foorOn)
+                if (foorOn && !automaatrežiim)
                 {
                     pealkiri.Text = "Sõida";
 
@@ -308,6 +478,16 @@ namespace TARge25_naidis
             };
 
             roheline.GestureRecognizers.Add(klõps);
+        }
+
+        // LEHELT LAHKUMISEL PEATUB AUTOMAATREŽIIM
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+
+            automaatTühistus?.Cancel();
+            automaatrežiim = false;
         }
     }
 }
