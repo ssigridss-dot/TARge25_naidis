@@ -12,7 +12,8 @@ public partial class StartPage : ContentPage
 		new Pop_Up_Page(),
         new GridPage(),
         new ValgusfoorPage(),
-        new TreePage()
+        new TreePage(),
+        new KarussellPage()
     };
 	public List<string> Lehenimed=new List<string>() 
 	{ 
@@ -23,7 +24,8 @@ public partial class StartPage : ContentPage
         "Sõnumid",
         "Grid",
         "Valgusfoor",
-        "Puu"
+        "Puu",
+        "Pildikarussell"
     };
 	public StartPage()
 	{

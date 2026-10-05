@@ -45,7 +45,7 @@ namespace TARge25_naidis
 
             Image taust = new Image
             {
-                Source = "linn.webp",
+                Source = "linn1.png",
                 Aspect = Aspect.AspectFill
             };
 
