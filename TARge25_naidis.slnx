@@ -1,4 +1,7 @@
 <Solution>
+  <Project Path="MultilangApp/MultilangApp.csproj" Id="5e31f2fa-7d5c-4756-acdb-d4f96549366a">
+    <Deploy />
+  </Project>
   <Project Path="TARge25_naidis/TARge25_naidis.csproj">
     <Deploy />
   </Project>
