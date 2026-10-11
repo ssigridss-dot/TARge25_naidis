@@ -1,265 +1,291 @@
-﻿using System.Collections.ObjectModel;
+﻿
+using System.Collections.ObjectModel;
+using System.Globalization;
 using ItalyFoodApp.Models;
+using ItalyFoodApp.Resources.Languages;
 
 namespace ItalyFoodApp;
 
 public partial class MainPage : ContentPage
 {
-    public ObservableCollection<Dish> Dishes { get; set; }
+    public ObservableCollection<Dish> Dishes { get; set; } = new();
 
     private bool isEstonian = false;
+    private CancellationTokenSource? carouselCancellation;
+
+    // Hetkel avatud roa andmed
+    private Dish? selectedDish;
 
     public MainPage()
     {
         InitializeComponent();
 
-        Dishes = new ObservableCollection<Dish>
-        {
-            new Dish
-            {
-                Name = "Pasta Carbonara",
-                Description = "Classic Roman pasta dish",
-                ImageUrl = "carbonara.jpg",
-                Ingredients = "Spaghetti, eggs, Pecorino Romano, guanciale and black pepper.",
-                PreparationTime = "About 25 minutes",
-
-                NameEt = "Pasta Carbonara",
-                DescriptionEt = "Klassikaline Rooma pastaroog",
-                IngredientsEt = "Spagetid, munad, Pecorino Romano, guanciale ja must pipar.",
-                PreparationTimeEt = "Umbes 25 minutit"
-            },
-
-            new Dish
-            {
-                Name = "Pizza Margherita",
-                Description = "Simple and delicious Italian pizza",
-                ImageUrl = "pizza.jpg",
-                Ingredients = "Pizza dough, tomato sauce, mozzarella, basil and olive oil.",
-                PreparationTime = "About 30 minutes",
-
-                NameEt = "Pizza Margherita",
-                DescriptionEt = "Lihtne ja maitsev Itaalia pitsa",
-                IngredientsEt = "Pitsapõhi, tomatikaste, mozzarella, basiilik ja oliiviõli.",
-                PreparationTimeEt = "Umbes 30 minutit"
-            },
-
-            new Dish
-            {
-                Name = "Tiramisu",
-                Description = "Popular coffee-flavored Italian dessert",
-                ImageUrl = "tiramisu.jpg",
-                Ingredients = "Ladyfingers, coffee, mascarpone, eggs, sugar and cocoa powder.",
-                PreparationTime = "About 30 minutes + chilling",
-
-                NameEt = "Tiramisu",
-                DescriptionEt = "Populaarne kohvimaitseline Itaalia magustoit",
-                IngredientsEt = "Küpsised, kohv, mascarpone, munad, suhkur ja kakaopulber.",
-                PreparationTimeEt = "Umbes 30 minutit + jahutamine"
-            },
-
-            new Dish
-            {
-                Name = "Risotto alla Milanese",
-                Description = "Creamy saffron rice from Milan",
-                ImageUrl = "risotto.jpg",
-                Ingredients = "Arborio rice, saffron, Parmesan, onion, butter and white wine.",
-                PreparationTime = "About 35 minutes",
-
-                NameEt = "Risotto alla Milanese",
-                DescriptionEt = "Kreemine safraniriis Milanost",
-                IngredientsEt = "Arborio riis, safran, Parmesan, sibul, või ja valge vein.",
-                PreparationTimeEt = "Umbes 35 minutit"
-            },
-
-            new Dish
-            {
-                Name = "Lasagne",
-                Description = "Layers of pasta, meat and cheese",
-                ImageUrl = "lasagne.jpg",
-                Ingredients = "Pasta sheets, minced meat, tomato sauce, béchamel and Parmesan.",
-                PreparationTime = "About 1 hour",
-
-                NameEt = "Lasagne",
-                DescriptionEt = "Kihiline pasta liha ja juustuga",
-                IngredientsEt = "Pastalehed, hakkliha, tomatikaste, béchamel-kaste ja Parmesan.",
-                PreparationTimeEt = "Umbes 1 tund"
-            }
-        };
+        CreateDishes();
 
         BindingContext = this;
-
         DishCarousel.IndicatorView = DishIndicator;
 
-        StartAutomaticCarousel();
+        UpdateLanguage();
     }
 
-
-    // ==========================================
-    // AUTOMAATNE KERIMINE
-    // ==========================================
-
-    private async void StartAutomaticCarousel()
+    // TOIDUD
+    private void CreateDishes()
     {
-        while (true)
+        Dishes.Add(new Dish
         {
-            await Task.Delay(4000);
+            Name = "Pasta Carbonara",
+            Description = "Classic Roman pasta dish",
+            ImageUrl = "pasta_carbonara.png",
+            Ingredients = "Spaghetti, eggs, Pecorino Romano, guanciale and black pepper.",
+            PreparationTime = "About 25 minutes",
+            NameEt = "Pasta Carbonara",
+            DescriptionEt = "Klassikaline Rooma pastaroog",
+            IngredientsEt = "Spagetid, munad, Pecorino Romano, guanciale ja must pipar.",
+            PreparationTimeEt = "Umbes 25 minutit"
+        });
 
-            if (Dishes.Count == 0)
-                continue;
+        Dishes.Add(new Dish
+        {
+            Name = "Pizza Margherita",
+            Description = "Simple and delicious Italian pizza",
+            ImageUrl = "pizza_margherita.png",
+            Ingredients = "Pizza dough, tomato sauce, mozzarella, basil and olive oil.",
+            PreparationTime = "About 30 minutes",
+            NameEt = "Pizza Margherita",
+            DescriptionEt = "Lihtne ja maitsev Itaalia pitsa",
+            IngredientsEt = "Pitsapõhi, tomatikaste, mozzarella, basiilik ja oliiviõli.",
+            PreparationTimeEt = "Umbes 30 minutit"
+        });
 
-            int nextPosition = DishCarousel.Position + 1;
+        Dishes.Add(new Dish
+        {
+            Name = "Tiramisu",
+            Description = "Popular coffee-flavored Italian dessert",
+            ImageUrl = "tiramisu.png",
+            Ingredients = "Ladyfingers, coffee, mascarpone, eggs, sugar and cocoa powder.",
+            PreparationTime = "About 30 minutes + chilling",
+            NameEt = "Tiramisu",
+            DescriptionEt = "Populaarne kohvimaitseline Itaalia magustoit",
+            IngredientsEt = "Küpsised, kohv, mascarpone, munad, suhkur ja kakaopulber.",
+            PreparationTimeEt = "Umbes 30 minutit + jahutamine"
+        });
 
-            if (nextPosition >= Dishes.Count)
-                nextPosition = 0;
+        Dishes.Add(new Dish
+        {
+            Name = "Risotto alla Milanese",
+            Description = "Creamy saffron rice from Milan",
+            ImageUrl = "risotto_alla_milanese.png",
+            Ingredients = "Arborio rice, saffron, Parmesan, onion, butter and white wine.",
+            PreparationTime = "About 35 minutes",
+            NameEt = "Risotto alla Milanese",
+            DescriptionEt = "Kreemine safraniriis Milanost",
+            IngredientsEt = "Arborio riis, safran, parmesan, sibul, või ja valge vein.",
+            PreparationTimeEt = "Umbes 35 minutit"
+        });
 
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                DishCarousel.ScrollTo(
-                    nextPosition,
-                    position: ScrollToPosition.Center,
-                    animate: true);
-            });
-        }
+        Dishes.Add(new Dish
+        {
+            Name = "Lasagne",
+            Description = "Layers of pasta, meat and cheese",
+            ImageUrl = "lasagne.png",
+            Ingredients = "Pasta sheets, minced meat, tomato sauce, béchamel and Parmesan.",
+            PreparationTime = "About 1 hour",
+            NameEt = "Lasagne",
+            DescriptionEt = "Kihiline pasta liha ja juustuga",
+            IngredientsEt = "Pastalehed, hakkliha, tomatikaste, béchamel-kaste ja parmesan.",
+            PreparationTimeEt = "Umbes 1 tund"
+        });
     }
 
-
-    // ==========================================
-    // KAARDI / INFO NUPU VAJUTAMINE
-    // ==========================================
-
-    private async void DishButton_Clicked(object sender, EventArgs e)
-    {
-        if (sender is not Button button)
-            return;
-
-        if (button.BindingContext is not Dish dish)
-            return;
-
-        string title;
-        string message;
-
-        if (isEstonian)
-        {
-            title = dish.NameEt;
-
-            message =
-                $"Peamised koostisosad:\n\n" +
-                $"{dish.IngredientsEt}\n\n" +
-                $"Valmistamisaeg: {dish.PreparationTimeEt}";
-        }
-        else
-        {
-            title = dish.Name;
-
-            message =
-                $"Main ingredients:\n\n" +
-                $"{dish.Ingredients}\n\n" +
-                $"Preparation time: {dish.PreparationTime}";
-        }
-
-        await DisplayAlert(title, message, "OK");
-    }
-
-
-    // ==========================================
-    // EESTI KEEL
-    // ==========================================
-
+    // KEELEVALIK
     private void EstonianButton_Clicked(object sender, EventArgs e)
     {
         isEstonian = true;
-
         UpdateLanguage();
-
-        EstonianButton.BackgroundColor = Color.FromArgb("#8B0000");
-        EnglishButton.BackgroundColor = Color.FromArgb("#555555");
     }
-
-
-    // ==========================================
-    // INGLISE KEEL
-    // ==========================================
 
     private void EnglishButton_Clicked(object sender, EventArgs e)
     {
         isEstonian = false;
-
         UpdateLanguage();
-
-        EnglishButton.BackgroundColor = Color.FromArgb("#8B0000");
-        EstonianButton.BackgroundColor = Color.FromArgb("#555555");
     }
 
-
-    // ==========================================
-    // TEKSTIDE UUENDAMINE
-    // ==========================================
-
+    // KEELE VAHETAMINE
     private void UpdateLanguage()
     {
+        AppResources.Culture = new CultureInfo(
+            isEstonian ? "et" : "en");
+
+        TitleLabel.Text = AppResources.AppTitle;
+        Title = isEstonian ? "Itaalia toidud" : "Italian Food";
+        SubtitleLabel.Text = AppResources.Subtitle;
+        
+        EstonianButton.Text = "🇪🇪 Eesti";
+        EnglishButton.Text = "🇬🇧 English";
+
+        EstonianButton.BackgroundColor = isEstonian
+            ? Color.FromArgb("#8B0000")
+            : Color.FromArgb("#555555");
+
+        EnglishButton.BackgroundColor = isEstonian
+            ? Color.FromArgb("#555555")
+            : Color.FromArgb("#8B0000");
+
         foreach (Dish dish in Dishes)
         {
-            if (isEstonian)
-            {
-                // Eesti tekstide jaoks kasutame
-                // eraldi omadusi.
-            }
+            dish.DisplayName = isEstonian
+                ? dish.NameEt
+                : dish.Name;
+
+            dish.DisplayDescription = GetDescription(dish);
+            dish.DisplayMoreInfo = AppResources.MoreInformation;
         }
 
-        DishCarousel.ItemsSource = null;
-        DishCarousel.ItemsSource = Dishes;
-
-        if (isEstonian)
+        // Kui detailinfo on avatud, uuendame ka selle keelt.
+        if (selectedDish != null && DetailsOverlay.IsVisible)
         {
-            TitleLabel.Text = "Itaalia köök";
-            SubtitleLabel.Text = "Avasta Itaalia parimad maitsed";
-            SwipeLabel.Text = "Libista, et avastada Itaalia roogasid";
-
-            foreach (Dish dish in Dishes)
-            {
-                dish.Name = dish.NameEt;
-                dish.Description = dish.DescriptionEt;
-            }
+            RefreshDishDetails(selectedDish);
         }
-        else
-        {
-            TitleLabel.Text = "Italian Kitchen";
-            SubtitleLabel.Text = "Taste the best of Italy";
-            SwipeLabel.Text = "Swipe to explore Italian dishes";
-
-            Dishes[0].Name = "Pasta Carbonara";
-            Dishes[0].Description = "Classic Roman pasta dish";
-
-            Dishes[1].Name = "Pizza Margherita";
-            Dishes[1].Description = "Simple and delicious Italian pizza";
-
-            Dishes[2].Name = "Tiramisu";
-            Dishes[2].Description = "Popular coffee-flavored Italian dessert";
-
-            Dishes[3].Name = "Risotto alla Milanese";
-            Dishes[3].Description = "Creamy saffron rice from Milan";
-
-            Dishes[4].Name = "Lasagne";
-            Dishes[4].Description = "Layers of pasta, meat and cheese";
-        }
-
-        DishCarousel.ItemsSource = null;
-        DishCarousel.ItemsSource = Dishes;
     }
 
+    private string GetDescription(Dish dish)
+    {
+        if (dish.Name == "Pasta Carbonara")
+            return AppResources.CarbonaraDescription;
 
-    // ==========================================
-    // KAARDI VAHETUMISE ANIMATSIOON
-    // ==========================================
+        if (dish.Name == "Pizza Margherita")
+            return AppResources.PizzaDescription;
 
+        if (dish.Name == "Tiramisu")
+            return AppResources.TiramisuDescription;
+
+        if (dish.Name == "Risotto alla Milanese")
+            return AppResources.RisottoDescription;
+
+        if (dish.Name == "Lasagne")
+            return AppResources.LasagneDescription;
+
+        return isEstonian
+            ? dish.DescriptionEt
+            : dish.Description;
+    }
+
+    // DETAILINFO AVAMINE
+    private void DishButton_Clicked(object sender, EventArgs e)
+    {
+        if (sender is not Button button ||
+            button.BindingContext is not Dish dish)
+        {
+            return;
+        }
+
+        // Peatame automaatse kerimise.
+        carouselCancellation?.Cancel();
+        carouselCancellation?.Dispose();
+        carouselCancellation = null;
+
+        selectedDish = dish;
+
+        RefreshDishDetails(dish);
+
+        // Näitame kujundatud hüpikakent.
+        DetailsOverlay.IsVisible = true;
+    }
+
+    // DETAILINFO SISU JA KEELE UUENDAMINE
+    private void RefreshDishDetails(Dish dish)
+    {
+        DetailTitleLabel.Text = isEstonian
+            ? dish.NameEt
+            : dish.Name;
+
+        IngredientsHeadingLabel.Text = AppResources.Ingredients;
+        PreparationHeadingLabel.Text = AppResources.PreparationTime;
+        CloseDetailsButton.Text = AppResources.Ok;
+
+        IngredientsValueLabel.Text = isEstonian
+            ? dish.IngredientsEt
+            : dish.Ingredients;
+
+        PreparationValueLabel.Text = isEstonian
+            ? dish.PreparationTimeEt
+            : dish.PreparationTime;
+    }
+
+    // DETAILINFO SULGEMINE
+    private void CloseDetailsButton_Clicked(object sender, EventArgs e)
+    {
+        DetailsOverlay.IsVisible = false;
+        selectedDish = null;
+
+        // Jätkame automaatset kerimist.
+        if (IsVisible)
+        {
+            StartAutomaticCarousel();
+        }
+    }
+
+    // AUTOMAATNE KERIMINE IGA 4 SEKUNDI JÄREL
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        StartAutomaticCarousel();
+    }
+
+    private void StartAutomaticCarousel()
+    {
+        if (carouselCancellation != null)
+            return;
+
+        carouselCancellation = new CancellationTokenSource();
+        CancellationToken token = carouselCancellation.Token;
+
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            try
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    await Task.Delay(4000, token);
+
+                    if (Dishes.Count == 0 ||
+                        DetailsOverlay.IsVisible)
+                    {
+                        continue;
+                    }
+
+                    int nextPosition =
+                        (DishCarousel.Position + 1) % Dishes.Count;
+
+                    DishCarousel.ScrollTo(
+                        nextPosition,
+                        position: ScrollToPosition.Center,
+                        animate: true);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Kerimine peatati.
+            }
+        });
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        carouselCancellation?.Cancel();
+        carouselCancellation?.Dispose();
+        carouselCancellation = null;
+    }
+
+    // ANIMATSIOON KAARDI VAHETAMISEL
     private async void DishCarousel_PositionChanged(
         object sender,
         PositionChangedEventArgs e)
     {
-        if (DishCarousel.CurrentItem is not null)
-        {
-            await DishCarousel.FadeTo(0.85, 100);
-            await DishCarousel.FadeTo(1.0, 150);
-        }
+        await DishCarousel.FadeToAsync(0.9, 100);
+        await DishCarousel.FadeToAsync(1.0, 150);
     }
 }

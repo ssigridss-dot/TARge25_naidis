@@ -5,7 +5,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:ItalyFoodApp.Models"
-    Title="Italian Kitchen">
+    Title="Italian Food">
 
     <ContentPage.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -15,156 +15,260 @@
         </LinearGradientBrush>
     </ContentPage.Background>
 
-    <Grid
-        RowDefinitions="Auto,Auto,*,Auto,Auto"
-        Padding="20">
+    <!-- KOGU LEHE KONTEINER -->
+    <Grid>
 
-        <!-- PEALKIRI -->
-        <VerticalStackLayout
-            Grid.Row="0"
-            Spacing="4"
-            Margin="0,10,0,10">
+        <!-- PÕHISISU -->
+        <Grid
+            x:Name="MainContentGrid"
+            RowDefinitions="Auto,Auto,*,Auto"
+            Padding="20">
 
-            <Label
-                x:Name="TitleLabel"
-                Text="Italian Kitchen"
-                FontSize="30"
-                FontAttributes="Bold"
-                TextColor="#8B0000"
-                HorizontalOptions="Center" />
+            <!-- PEALKIRI -->
+            <VerticalStackLayout
+                Grid.Row="0"
+                Spacing="4"
+                Margin="0,10,0,10">
 
-            <Label
-                x:Name="SubtitleLabel"
-                Text="Taste the best of Italy"
-                FontSize="16"
-                TextColor="#5D4037"
-                HorizontalOptions="Center" />
+                <Label
+                    x:Name="TitleLabel"
+                    Text="Italian Food"
+                    FontSize="30"
+                    FontAttributes="Bold"
+                    TextColor="#8B0000"
+                    HorizontalOptions="Center" />
 
-        </VerticalStackLayout>
+                <Label
+                    x:Name="SubtitleLabel"
+                    Text="Taste the best of Italy"
+                    FontSize="16"
+                    TextColor="#5D4037"
+                    HorizontalOptions="Center" />
 
+            </VerticalStackLayout>
 
-        <!-- KEELEVALIK -->
-        <HorizontalStackLayout
-            Grid.Row="1"
-            HorizontalOptions="Center"
-            Spacing="10"
-            Margin="0,5,0,10">
+            <!-- KEEL -->
+            <HorizontalStackLayout
+                Grid.Row="1"
+                HorizontalOptions="Center"
+                Spacing="10"
+                Margin="0,5,0,10">
 
-            <Button
-                x:Name="EstonianButton"
-                Text="🇪🇪 Eesti"
-                Clicked="EstonianButton_Clicked"
-                BackgroundColor="#8B0000"
-                TextColor="White"
-                CornerRadius="20"
-                Padding="15,8" />
+                <Button
+                    x:Name="EstonianButton"
+                    Text="🇪🇪 Eesti"
+                    Clicked="EstonianButton_Clicked"
+                    BackgroundColor="#8B0000"
+                    TextColor="White"
+                    CornerRadius="20"
+                    Padding="15,8" />
 
-            <Button
-                x:Name="EnglishButton"
-                Text="🇬🇧 English"
-                Clicked="EnglishButton_Clicked"
-                BackgroundColor="#555555"
-                TextColor="White"
-                CornerRadius="20"
-                Padding="15,8" />
+                <Button
+                    x:Name="EnglishButton"
+                    Text="🇬🇧 English"
+                    Clicked="EnglishButton_Clicked"
+                    BackgroundColor="#555555"
+                    TextColor="White"
+                    CornerRadius="20"
+                    Padding="15,8" />
 
-        </HorizontalStackLayout>
+            </HorizontalStackLayout>
 
+            <!-- TOIDUKARUSSELL -->
+            <CarouselView
+                x:Name="DishCarousel"
+                Grid.Row="2"
+                ItemsSource="{Binding Dishes}"
+                PositionChanged="DishCarousel_PositionChanged"
+                PeekAreaInsets="20"
+                Loop="True">
 
-        <!-- CAROUSEL -->
-        <CarouselView
-            x:Name="DishCarousel"
-            Grid.Row="2"
-            ItemsSource="{Binding Dishes}"
-            PositionChanged="DishCarousel_PositionChanged"
-            PeekAreaInsets="20"
-            Loop="True">
+                <CarouselView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Dish">
 
-            <CarouselView.ItemTemplate>
-                <DataTemplate x:DataType="models:Dish">
+                        <Border
+                            Margin="10,10,10,15"
+                            Padding="0"
+                            Stroke="#E0A458"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 25"
+                            BackgroundColor="White">
 
-                    <Frame
-                        Margin="10,10,10,15"
-                        Padding="0"
-                        CornerRadius="25"
-                        HasShadow="True"
-                        BackgroundColor="White"
-                        BorderColor="#E0A458">
+                            <Border.Shadow>
+                                <Shadow
+                                    Brush="#805D4037"
+                                    Offset="0,4"
+                                    Radius="8"
+                                    Opacity="0.25" />
+                            </Border.Shadow>
 
-                        <Grid
-                            RowDefinitions="*,Auto,Auto,Auto"
-                            Padding="0">
+                            <Grid
+                                RowDefinitions="*,Auto,Auto,Auto"
+                                Padding="0">
 
-                            <!-- PILT -->
-                            <Image
-                                Grid.Row="0"
-                                Source="{Binding ImageUrl}"
-                                Aspect="AspectFill"
-                                HeightRequest="300" />
+                                <!-- PILT -->
+                                <Image
+                                    Grid.Row="0"
+                                    Source="{Binding ImageUrl}"
+                                    Aspect="Fill"
+                                    HeightRequest="220"
+                                    WidthRequest="300"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center" />
 
-                            <!-- NIMI -->
-                            <Label
-                                Grid.Row="1"
-                                x:Name="DishNameLabel"
-                                Text="{Binding Name}"
-                                FontSize="25"
-                                FontAttributes="Bold"
-                                TextColor="#8B0000"
-                                HorizontalTextAlignment="Center"
-                                Margin="15,15,15,5" />
+                                <!-- TOIT -->
+                                <Label
+                                    Grid.Row="1"
+                                    Text="{Binding DisplayName}"
+                                    FontSize="25"
+                                    FontAttributes="Bold"
+                                    TextColor="#8B0000"
+                                    HorizontalTextAlignment="Center"
+                                    Margin="15,15,15,5" />
 
-                            <!-- KIRJELDUS -->
-                            <Label
-                                Grid.Row="2"
-                                x:Name="DishDescriptionLabel"
-                                Text="{Binding Description}"
-                                FontSize="16"
-                                TextColor="#5D4037"
-                                HorizontalTextAlignment="Center"
-                                Margin="15,0,15,15" />
+                                <!-- KIRJELDUS -->
+                                <Label
+                                    Grid.Row="2"
+                                    Text="{Binding DisplayDescription}"
+                                    FontSize="16"
+                                    TextColor="#5D4037"
+                                    HorizontalTextAlignment="Center"
+                                    Margin="15,0,15,15" />
 
-                            <!-- INFO NUPP -->
-                            <Button
-                                Grid.Row="3"
-                                Text="More information"
-                                Clicked="DishButton_Clicked"
-                                BackgroundColor="#8B0000"
-                                TextColor="White"
-                                FontAttributes="Bold"
-                                CornerRadius="20"
-                                Margin="30,0,30,20"
-                                Padding="10" />
+                                <!-- DETAILINFO -->
+                                <Button
+                                    Grid.Row="3"
+                                    Text="{Binding DisplayMoreInfo}"
+                                    Clicked="DishButton_Clicked"
+                                    BackgroundColor="#8B0000"
+                                    TextColor="White"
+                                    FontAttributes="Bold"
+                                    CornerRadius="20"
+                                    Margin="30,0,30,20"
+                                    Padding="10" />
 
-                        </Grid>
+                            </Grid>
 
-                    </Frame>
+                        </Border>
 
-                </DataTemplate>
-            </CarouselView.ItemTemplate>
+                    </DataTemplate>
+                </CarouselView.ItemTemplate>
 
-        </CarouselView>
+            </CarouselView>
 
+            <!-- INDIKAATOR -->
+            <IndicatorView
+                x:Name="DishIndicator"
+                Grid.Row="3"
+                IndicatorColor="#BDBDBD"
+                SelectedIndicatorColor="#8B0000"
+                IndicatorSize="10"
+                HorizontalOptions="Center"
+                Margin="0,5,0,10" />
 
-        <!-- INDICATOR -->
-        <IndicatorView
-            x:Name="DishIndicator"
-            Grid.Row="3"
-            IndicatorColor="#BDBDBD"
-            SelectedIndicatorColor="#8B0000"
-            IndicatorSize="10"
-            HorizontalOptions="Center"
-            Margin="0,5,0,10" />
+            
+        </Grid>
 
+        <!-- DETAILINFO HÜPIKAKNA KIHT -->
+        <Grid
+            x:Name="DetailsOverlay"
+            IsVisible="False"
+            ZIndex="10"
+            BackgroundColor="#99000000"
+            Padding="20">
 
-        <!-- INFO -->
-        <Label
-            x:Name="SwipeLabel"
-            Grid.Row="4"
-            Text="Swipe to explore Italian dishes"
-            FontSize="14"
-            TextColor="#5D4037"
-            HorizontalOptions="Center"
-            Margin="0,0,0,10" />
+            <!-- HÜPIKAKNA KAART -->
+            <Border
+                WidthRequest="340"
+                MaximumWidthRequest="420"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                BackgroundColor="#FFF8F0"
+                Stroke="#8B0000"
+                StrokeThickness="2"
+                StrokeShape="RoundRectangle 28"
+                Padding="24">
+
+                <Border.Shadow>
+                    <Shadow
+                        Brush="Black"
+                        Offset="0,6"
+                        Radius="15"
+                        Opacity="0.35" />
+                </Border.Shadow>
+
+                <VerticalStackLayout Spacing="16">
+
+                    <!-- PEALKIRI -->
+                    <Label
+                        x:Name="DetailTitleLabel"
+                        Text="Dish name"
+                        FontSize="25"
+                        FontAttributes="Bold"
+                        TextColor="#8B0000"
+                        HorizontalTextAlignment="Center" />
+
+                    <!-- DEKORATIIVNE JOON -->
+                    <BoxView
+                        HeightRequest="2"
+                        Color="#E0A458"
+                        HorizontalOptions="Fill" />
+
+                    <!-- KOOSTISOSAD -->
+                    <VerticalStackLayout Spacing="6">
+
+                        <Label
+                            x:Name="IngredientsHeadingLabel"
+                            Text="Ingredients"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="#8B0000" />
+
+                        <Label
+                            x:Name="IngredientsValueLabel"
+                            Text=""
+                            FontSize="15"
+                            TextColor="#5D4037"
+                            LineBreakMode="WordWrap" />
+
+                    </VerticalStackLayout>
+
+                    <!-- VALMISTAMISAEG -->
+                    <VerticalStackLayout Spacing="6">
+
+                        <Label
+                            x:Name="PreparationHeadingLabel"
+                            Text="Preparation time"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="#8B0000" />
+
+                        <Label
+                            x:Name="PreparationValueLabel"
+                            Text=""
+                            FontSize="15"
+                            TextColor="#5D4037"
+                            LineBreakMode="WordWrap" />
+
+                    </VerticalStackLayout>
+
+                    <!-- SULGEMISNUPP -->
+                    <Button
+                        x:Name="CloseDetailsButton"
+                        Text="OK"
+                        Clicked="CloseDetailsButton_Clicked"
+                        BackgroundColor="#8B0000"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="22"
+                        Padding="15,12"
+                        Margin="0,5,0,0" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+        </Grid>
 
     </Grid>
 

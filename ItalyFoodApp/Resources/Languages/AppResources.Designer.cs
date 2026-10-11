@@ -59,5 +59,113 @@ namespace ItalyFoodApp.Resources.Languages {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Italian Food.
+        /// </summary>
+        internal static string AppTitle {
+            get {
+                return ResourceManager.GetString("AppTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Classic Roman pasta dish.
+        /// </summary>
+        internal static string CarbonaraDescription {
+            get {
+                return ResourceManager.GetString("CarbonaraDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Main ingredients.
+        /// </summary>
+        internal static string Ingredients {
+            get {
+                return ResourceManager.GetString("Ingredients", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Layers of pasta, meat and cheese.
+        /// </summary>
+        internal static string LasagneDescription {
+            get {
+                return ResourceManager.GetString("LasagneDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More info.
+        /// </summary>
+        internal static string MoreInformation {
+            get {
+                return ResourceManager.GetString("MoreInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string Ok {
+            get {
+                return ResourceManager.GetString("Ok", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Simple and delicious Italian pizza.
+        /// </summary>
+        internal static string PizzaDescription {
+            get {
+                return ResourceManager.GetString("PizzaDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preparation time.
+        /// </summary>
+        internal static string PreparationTime {
+            get {
+                return ResourceManager.GetString("PreparationTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creamy saffron rice from Milan.
+        /// </summary>
+        internal static string RisottoDescription {
+            get {
+                return ResourceManager.GetString("RisottoDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Taste the best of Italy.
+        /// </summary>
+        internal static string Subtitle {
+            get {
+                return ResourceManager.GetString("Subtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Swipe to explore Italian dishes.
+        /// </summary>
+        internal static string SwipeHint {
+            get {
+                return ResourceManager.GetString("SwipeHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Popular coffee-flavored Italian dessert.
+        /// </summary>
+        internal static string TiramisuDescription {
+            get {
+                return ResourceManager.GetString("TiramisuDescription", resourceCulture);
+            }
+        }
     }
 }
