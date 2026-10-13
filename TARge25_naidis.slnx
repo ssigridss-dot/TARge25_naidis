@@ -1,4 +1,7 @@
 <Solution>
+  <Project Path="GemApp/GemApp.csproj" Id="d987088c-183b-44e9-8532-31bb37fa818c">
+    <Deploy />
+  </Project>
   <Project Path="ItalyFoodApp/ItalyFoodApp.csproj" Id="21f41e1d-954b-4397-b673-fedde19a9103">
     <Deploy Solution="Debug|*" />
   </Project>
