@@ -1,10 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
+namespace GemApp.Models;
 
-namespace GemApp.Models
+public class Player
 {
-    public partial class Player
+    public string Name { get; private set; }
+    public int Score { get; private set; }
+    public int Moves { get; private set; }
+
+    public Player(string name)
     {
+        Name = name;
+        Score = 0;
+        Moves = 0;
+    }
+
+    public void AddPoints(int points)
+    {
+        if (points > 0)
+        {
+            Score += points;
+        }
+    }
+
+    public void MakeMove()
+    {
+        Moves++;
+    }
+
+    public void Reset()
+    {
+        Score = 0;
+        Moves = 0;
     }
 }
