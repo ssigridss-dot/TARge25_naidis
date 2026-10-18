@@ -21,74 +21,101 @@
             Opacity="0.28"
             InputTransparent="True" />
 
-        <!-- Mängu sisu -->
         <ScrollView>
-            <VerticalStackLayout
-                Padding="12"
-                Spacing="12">
+            <VerticalStackLayout Padding="12" Spacing="12">
 
                 <Label
                     Text="💎 GemApp"
-                    FontSize="32"
+                    FontSize="30"
                     FontAttributes="Bold"
                     HorizontalOptions="Center"
                     TextColor="{DynamicResource TextColor}"
                     FontFamily="{DynamicResource GameFont}" />
 
                 <Label
-                    Text="Ühenda vähemalt kolm ühesugust kalliskivi!"
+                    Text="Kogu 60 sekundiga võimalikult palju punkte!"
                     FontSize="13"
                     HorizontalOptions="Center"
                     HorizontalTextAlignment="Center"
                     TextColor="{DynamicResource TextColor}" />
 
-                <!-- Punktid ja käigud -->
-                <Border
-                    StrokeThickness="0"
-                    BackgroundColor="{DynamicResource CardColor}"
-                    StrokeShape="RoundRectangle 16"
-                    Padding="12">
+                <!-- Punktid ja aeg -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
 
-                    <Grid
-                        ColumnDefinitions="*,*"
-                        RowDefinitions="Auto,Auto">
+                    <Border
+                        Grid.Column="0"
+                        BackgroundColor="{DynamicResource CardColor}"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="14">
 
-                        <Label
-                            Text="PUNKTID"
-                            TextColor="{DynamicResource TextColor}" />
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                Text="💎 PUNKTID"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                TextColor="{DynamicResource TextColor}"
+                                HorizontalTextAlignment="Center" />
 
-                        <Label
-                            x:Name="MovesLabel"
-                            Grid.Column="1"
-                            Text="KÄIGUD: 0"
-                            HorizontalTextAlignment="End"
-                            TextColor="{DynamicResource TextColor}" />
+                            <Label
+                                x:Name="ScoreLabel"
+                                Text="0"
+                                FontSize="28"
+                                FontAttributes="Bold"
+                                TextColor="{DynamicResource TextColor}"
+                                HorizontalTextAlignment="Center" />
 
-                        <Label
-                            x:Name="ScoreLabel"
-                            Grid.Row="1"
-                            Text="0 / 500"
-                            FontSize="22"
-                            FontAttributes="Bold"
-                            TextColor="{DynamicResource TextColor}" />
+                            <ProgressBar
+                                x:Name="ScoreProgress"
+                                Progress="0"
+                                ProgressColor="#E9A23B"
+                                HeightRequest="6" />
+                        </VerticalStackLayout>
+                    </Border>
 
-                        <ProgressBar
-                            x:Name="ScoreProgress"
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Progress="0"
-                            VerticalOptions="Center"
-                            ProgressColor="#E9A23B" />
-                    </Grid>
-                </Border>
+                    <Border
+                        Grid.Column="1"
+                        BackgroundColor="{DynamicResource CardColor}"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="14">
+
+                        <VerticalStackLayout
+                            Spacing="4"
+                            VerticalOptions="Center">
+
+                            <Label
+                                Text="⏱ AEG"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                TextColor="{DynamicResource TextColor}"
+                                HorizontalTextAlignment="Center" />
+
+                            <Label
+                                x:Name="TimerLabel"
+                                Text="60 s"
+                                FontSize="28"
+                                FontAttributes="Bold"
+                                TextColor="{DynamicResource TextColor}"
+                                HorizontalTextAlignment="Center" />
+
+                            <Label
+                                Text="Mänguaeg"
+                                FontSize="11"
+                                TextColor="{DynamicResource TextColor}"
+                                HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
 
                 <Label
-                    Text="Puuduta kahte kõrvuti kivi"
+                    Text="Puuduta kahte kõrvuti kalliskivi"
                     FontSize="13"
                     HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
                     TextColor="{DynamicResource TextColor}" />
 
-                <!-- Kalliskivide mängulaud -->
+                <!-- Mängulaud -->
                 <Border
                     StrokeThickness="0"
                     BackgroundColor="{DynamicResource CardColor}"
@@ -106,63 +133,264 @@
 
                 <Label
                     x:Name="StatusLabel"
-                    Text="Vali esimene kalliskivi!"
+                    Text="Vajuta „Uus mäng”, et alustada!"
                     HorizontalOptions="Center"
                     HorizontalTextAlignment="Center"
                     TextColor="{DynamicResource TextColor}" />
 
-                <Label
-                    Text="VALI OMA TEEMA"
-                    FontAttributes="Bold"
-                    FontSize="15"
-                    HorizontalOptions="Center"
-                    TextColor="{DynamicResource TextColor}" />
-
-                <!-- Kolm kujundust -->
+                <!-- Alumised nupud -->
                 <Grid
                     ColumnDefinitions="*,*,*"
-                    ColumnSpacing="6">
+                    ColumnSpacing="7"
+                    Margin="0,4,0,0">
 
                     <Button
-                        Text="🌸 Lilleaed"
-                        Clicked="OnLightThemeClicked"
-                        FontSize="11"
-                        Padding="3"
+                        x:Name="ThemeButton"
+                        Grid.Column="0"
+                        Text="🎨 Teema ▾"
+                        Clicked="OnThemeMenuClicked"
+                        FontSize="12"
+                        Padding="4"
+                        HeightRequest="48"
                         BackgroundColor="#F5C7DB"
                         TextColor="#49304F"
+                        FontAttributes="Bold"
                         CornerRadius="12" />
 
                     <Button
                         Grid.Column="1"
-                        Text="🌙 Öine meri"
-                        Clicked="OnDarkThemeClicked"
-                        FontSize="11"
-                        Padding="3"
-                        BackgroundColor="#18334D"
-                        TextColor="White"
+                        Text="🏆 Edetabel"
+                        Clicked="OnLeaderboardClicked"
+                        FontSize="12"
+                        Padding="4"
+                        HeightRequest="48"
+                        BackgroundColor="#E9A23B"
+                        TextColor="#33264A"
+                        FontAttributes="Bold"
                         CornerRadius="12" />
 
                     <Button
                         Grid.Column="2"
-                        Text="🎃 Halloween"
-                        Clicked="OnHalloweenThemeClicked"
-                        FontSize="11"
-                        Padding="3"
-                        BackgroundColor="#6A347A"
-                        TextColor="#FFF0D0"
+                        Text="🔄 Uus mäng"
+                        Clicked="OnRestartClicked"
+                        FontSize="12"
+                        Padding="4"
+                        HeightRequest="48"
+                        BackgroundColor="#7C5CC4"
+                        TextColor="White"
+                        FontAttributes="Bold"
                         CornerRadius="12" />
                 </Grid>
-
-                <Button
-                    Text="🔄 Alusta uut mängu"
-                    Clicked="OnRestartClicked"
-                    HeightRequest="48"
-                    BackgroundColor="#7C5CC4"
-                    TextColor="White"
-                    FontAttributes="Bold"
-                    CornerRadius="14" />
-
             </VerticalStackLayout>
         </ScrollView>
+
+        <!-- Teemaakna tume taust -->
+        <BoxView
+            x:Name="ThemePopupBackdrop"
+            IsVisible="False"
+            BackgroundColor="#80000000"
+            InputTransparent="False"
+            ZIndex="10">
+
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer
+                    Tapped="OnCloseThemeMenuTapped" />
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <!-- Teema hüpikaken -->
+        <Border
+            x:Name="ThemePopup"
+            IsVisible="False"
+            ZIndex="11"
+            WidthRequest="270"
+            Padding="20"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            BackgroundColor="{DynamicResource CardColor}"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 22">
+
+            <VerticalStackLayout Spacing="12">
+
+                <Label
+                    Text="🎨 Vali mängu teema"
+                    FontSize="20"
+                    FontAttributes="Bold"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{DynamicResource TextColor}" />
+
+                <Label
+                    Text="Muuda mängu meeleolu!"
+                    FontSize="13"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{DynamicResource TextColor}" />
+
+                <Button
+                    Text="🌸 Lilleaed"
+                    Clicked="OnLightThemeClicked"
+                    BackgroundColor="#F5C7DB"
+                    TextColor="#49304F"
+                    CornerRadius="12"
+                    HeightRequest="46" />
+
+                <Button
+                    Text="🌙 Öine meri"
+                    Clicked="OnDarkThemeClicked"
+                    BackgroundColor="#18334D"
+                    TextColor="White"
+                    CornerRadius="12"
+                    HeightRequest="46" />
+
+                <Button
+                    Text="🎃 Halloween"
+                    Clicked="OnHalloweenThemeClicked"
+                    BackgroundColor="#6A347A"
+                    TextColor="#FFF0D0"
+                    CornerRadius="12"
+                    HeightRequest="46" />
+
+                <Button
+                    Text="Sulge"
+                    Clicked="OnCloseThemeMenuClicked"
+                    BackgroundColor="#D9D9E5"
+                    TextColor="#33264A"
+                    CornerRadius="12"
+                    HeightRequest="42" />
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Edetabeli akna tume taust -->
+        <BoxView
+            x:Name="LeaderboardPopupBackdrop"
+            IsVisible="False"
+            BackgroundColor="#80000000"
+            InputTransparent="False"
+            ZIndex="20" />
+
+        <!-- EDETABELI HÜPIKAKEN -->
+        <Border
+            x:Name="LeaderboardPopup"
+            IsVisible="False"
+            ZIndex="21"
+            WidthRequest="320"
+            MaximumHeightRequest="520"
+            Padding="18"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            BackgroundColor="{DynamicResource CardColor}"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 22">
+
+            <VerticalStackLayout Spacing="12">
+
+                <Label
+                    Text="🏆 Edetabel"
+                    FontSize="23"
+                    FontAttributes="Bold"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{DynamicResource TextColor}" />
+
+                <Label
+                    Text="Sinu parimad tulemused"
+                    FontSize="13"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{DynamicResource TextColor}" />
+
+                <!-- Edetabeli kirjed -->
+                <CollectionView
+                    x:Name="LeaderboardList"
+                    HeightRequest="300"
+                    SelectionMode="None">
+
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout
+                            Padding="12"
+                            Spacing="8"
+                            VerticalOptions="Center">
+
+                            <Label
+                                Text="🏅"
+                                FontSize="35"
+                                HorizontalTextAlignment="Center" />
+
+                            <Label
+                                Text="Edetabel on tühi."
+                                HorizontalTextAlignment="Center"
+                                TextColor="{DynamicResource TextColor}" />
+
+                            <Label
+                                Text="Mängi ja salvesta oma tulemus!"
+                                FontSize="12"
+                                HorizontalTextAlignment="Center"
+                                TextColor="{DynamicResource TextColor}" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                BackgroundColor="{DynamicResource CardColor}"
+                                Stroke="#D9D9E5"
+                                StrokeThickness="1"
+                                Padding="9"
+                                Margin="0,3"
+                                StrokeShape="RoundRectangle 10">
+
+                                <Grid ColumnDefinitions="*,Auto">
+
+                                    <VerticalStackLayout
+                                        Grid.Column="0"
+                                        Spacing="3">
+
+                                        <Label
+                                            Text="{Binding PlayerName}"
+                                            FontAttributes="Bold"
+                                            TextColor="{DynamicResource TextColor}" />
+
+                                        <Label
+                                            Text="{Binding PlayedAt, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                                            FontSize="10"
+                                            TextColor="{DynamicResource TextColor}" />
+                                    </VerticalStackLayout>
+
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="{Binding Score, StringFormat='{0} p'}"
+                                        FontAttributes="Bold"
+                                        VerticalOptions="Center"
+                                        TextColor="{DynamicResource TextColor}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Sulge ja Reset kõrvuti -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+
+                    <Button
+                        Grid.Column="0"
+                        Text="Sulge"
+                        Clicked="OnCloseLeaderboardClicked"
+                        BackgroundColor="#D9D9E5"
+                        TextColor="#33264A"
+                        FontAttributes="Bold"
+                        CornerRadius="12"
+                        HeightRequest="46" />
+
+                    <Button
+                        Grid.Column="1"
+                        Text="Reset"
+                        Clicked="OnResetLeaderboardClicked"
+                        BackgroundColor="#D9534F"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="12"
+                        HeightRequest="46" />
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+
     </Grid>
 </ContentPage>

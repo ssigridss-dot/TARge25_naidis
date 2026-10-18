@@ -1,71 +1,75 @@
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using GemApp.Models;
 
 namespace GemApp.GemLogic;
 
 public class Game
 {
-    private readonly MatchDetector matchDetector = new();
-
     public Board Board { get; private set; }
-    public Player Player { get; }
-    public bool IsGameOver { get; private set; }
 
-    public int TargetScore { get; } = 500;
+    public int Score { get; private set; }
+
+    public int TargetScore { get; set; } = 500;
+
+    public int Moves { get; private set; }
+
+    public bool GameOver { get; private set; }
+
+    public Dictionary<GemType, int> CollectedGems { get; }
+        = Enum.GetValues<GemType>()
+            .ToDictionary(type => type, _ => 0);
 
     public Game()
     {
         Board = new Board();
-        Player = new Player("Mängija");
     }
 
-    public bool TrySwap(
+    public bool MakeMove(
         int row1, int col1,
         int row2, int col2)
     {
-        if (IsGameOver)
+        if (GameOver)
             return false;
 
-        if (!Board.Swap(row1, col1, row2, col2))
+        if (!Board.TrySwap(row1, col1, row2, col2))
             return false;
 
-        var matches = matchDetector.FindMatches(Board.Gems);
+        Moves++;
 
-        if (matches.Count == 0)
+        int removed = Board.ResolveMatches(type =>
         {
-            // Sobimatu vahetus: taasta algne olukord.
-            Board.Swap(row1, col1, row2, col2);
-            return false;
-        }
+            RecordCollectedGem(type);
+        });
 
-        Player.MakeMove();
-
-        while (matches.Count > 0)
-        {
-            Player.AddPoints(matches.Count * 10);
-
-            Board.RemoveMatches(matches);
-
-            matches = matchDetector.FindMatches(Board.Gems);
-        }
-
-        if (Player.Score >= TargetScore)
-        {
-            IsGameOver = true;
-        }
-        else if (!Board.HasPossibleMove())
-        {
-            // Kui käike enam pole, loo uus mängulaud.
-            Board.FillBoard();
-        }
+        Score += removed * 60;
 
         return true;
+    }
+
+    public void EndGame()
+    {
+        GameOver = true;
     }
 
     public void Restart()
     {
         Board = new Board();
-        Player.Reset();
-        IsGameOver = false;
+
+        Score = 0;
+        Moves = 0;
+        GameOver = false;
+
+        foreach (GemType type in CollectedGems.Keys.ToList())
+        {
+            CollectedGems[type] = 0;
+        }
+    }
+
+    public void RecordCollectedGem(GemType type)
+    {
+        CollectedGems[type]++;
     }
 }

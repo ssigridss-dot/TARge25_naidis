@@ -1,102 +1,59 @@
-
 using GemApp.Models;
 
 namespace GemApp.GemLogic;
 
 public class Board
 {
+    public const int Rows = 8;
+    public const int Cols = 8;
+
+    public Gem[,] Cells { get; } = new Gem[Rows, Cols];
+
     private readonly Random random = new();
-    private readonly MatchDetector detector = new();
 
-    private readonly string[] types =
-    {
-        "Ruby", "Emerald", "Sapphire",
-        "Amethyst", "Topaz", "Diamond"
-    };
-
-    private readonly string[] symbols =
-    {
-        "🔴", "🟢", "🔵", "🟣", "🟡", "💎"
-    };
-
-    public int Rows { get; } = 8;
-    public int Columns { get; } = 8;
-
-    public Gem?[,] Gems { get; private set; }
+    private static readonly GemType[] GemTypes =
+        Enum.GetValues<GemType>();
 
     public Board()
     {
-        Gems = new Gem?[Rows, Columns];
-        FillBoard();
+        GenerateBoard();
     }
 
     private Gem CreateRandomGem()
     {
-        int index = random.Next(types.Length);
-        return new Gem(types[index], symbols[index]);
+        return new Gem(GemTypes[random.Next(GemTypes.Length)]);
     }
 
-    public void FillBoard()
+    public void GenerateBoard()
     {
-        // Proovi luua mängulaud, kus pole algseid
-        // kombinatsioone ja leidub vähemalt üks käik.
-        for (int attempt = 0; attempt < 200; attempt++)
-        {
-            Gems = new Gem?[Rows, Columns];
-
-            for (int row = 0; row < Rows; row++)
-            {
-                for (int col = 0; col < Columns; col++)
-                {
-                    Gem gem;
-
-                    do
-                    {
-                        gem = CreateRandomGem();
-                    }
-                    while (WouldCreateMatch(row, col, gem.Type));
-
-                    Gems[row, col] = gem;
-                }
-            }
-
-            if (HasPossibleMove())
-                return;
-        }
-
-        // Väga ebatõenäoline varuvariant.
-        // Tekita uus laud ja eemalda algsed kombinatsioonid.
-        Gems = new Gem?[Rows, Columns];
-
+        // Alguses ei tohi laual olla automaatseid kolmikuid.
         for (int row = 0; row < Rows; row++)
         {
-            for (int col = 0; col < Columns; col++)
+            for (int col = 0; col < Cols; col++)
             {
-                Gem gem;
-
                 do
                 {
-                    gem = CreateRandomGem();
+                    Cells[row, col] = CreateRandomGem();
                 }
-                while (WouldCreateMatch(row, col, gem.Type));
-
-                Gems[row, col] = gem;
+                while (CreatesMatchAt(row, col));
             }
         }
     }
 
-    private bool WouldCreateMatch(int row, int col, string type)
+    private bool CreatesMatchAt(int row, int col)
     {
+        GemType type = Cells[row, col].Type;
+
         if (col >= 2 &&
-            Gems[row, col - 1]?.Type == type &&
-            Gems[row, col - 2]?.Type == type)
+            Cells[row, col - 1].Type == type &&
+            Cells[row, col - 2].Type == type)
         {
             return true;
         }
 
         if (row >= 2 &&
-            Gems[row - 1, col]?.Type == type &&
-            Gems[row - 2, col]?.Type == type)
+            Cells[row - 1, col].Type == type &&
+            Cells[row - 2, col].Type == type)
         {
             return true;
         }
@@ -104,103 +61,107 @@ public class Board
         return false;
     }
 
-    public bool IsInside(int row, int col)
+    public bool AreAdjacent(
+        int row1, int col1,
+        int row2, int col2)
     {
-        return row >= 0 && row < Rows &&
-               col >= 0 && col < Columns;
+        return Math.Abs(row1 - row2) +
+               Math.Abs(col1 - col2) == 1;
     }
 
-    public bool Swap(int row1, int col1, int row2, int col2)
+    public bool TrySwap(
+        int row1, int col1,
+        int row2, int col2)
     {
-        if (!IsInside(row1, col1) ||
-            !IsInside(row2, col2))
+        if (!AreAdjacent(row1, col1, row2, col2))
+            return false;
+
+        Swap(row1, col1, row2, col2);
+
+        // Kui vahetus ei tekitanud kolmikut,
+        // taastame algse olukorra.
+        if (MatchDetector.FindMatches(Cells).Count == 0)
         {
+            Swap(row1, col1, row2, col2);
             return false;
         }
-
-        // Vahetada saab ainult kõrvuti asuvaid kive.
-        if (Math.Abs(row1 - row2) +
-            Math.Abs(col1 - col2) != 1)
-        {
-            return false;
-        }
-
-        (Gems[row1, col1], Gems[row2, col2]) =
-            (Gems[row2, col2], Gems[row1, col1]);
 
         return true;
     }
 
-    public void RemoveMatches(
-        HashSet<(int Row, int Col)> matches)
+    private void Swap(
+        int row1, int col1,
+        int row2, int col2)
     {
-        foreach (var (row, col) in matches)
+        (Cells[row1, col1], Cells[row2, col2]) =
+            (Cells[row2, col2], Cells[row1, col1]);
+    }
+
+    public int ResolveMatches(
+    Action<GemType>? onGemRemoved = null)
+    {
+        int totalRemoved = 0;
+
+        while (true)
         {
-            Gems[row, col] = null;
+            var matches = MatchDetector.FindMatches(Cells);
+
+            if (matches.Count == 0)
+                break;
+
+            foreach (var (row, col) in matches)
+            {
+                GemType type = Cells[row, col].Type;
+                onGemRemoved?.Invoke(type);
+                Cells[row, col] = null!;
+            }
+
+            totalRemoved += matches.Count;
+
+            ApplyGravity();
+            FillEmptyCells();
         }
 
-        // Kivid kukuvad iga veeru alumisse ossa.
-        for (int col = 0; col < Columns; col++)
+        return totalRemoved;
+    }
+
+    private void ApplyGravity()
+    {
+        for (int col = 0; col < Cols; col++)
         {
-            int targetRow = Rows - 1;
+            int writeRow = Rows - 1;
 
             for (int row = Rows - 1; row >= 0; row--)
             {
-                if (Gems[row, col] != null)
+                if (Cells[row, col] != null)
                 {
-                    Gems[targetRow, col] = Gems[row, col];
+                    Cells[writeRow, col] = Cells[row, col];
 
-                    if (targetRow != row)
-                        Gems[row, col] = null;
+                    if (writeRow != row)
+                        Cells[row, col] = null!;
 
-                    targetRow--;
+                    writeRow--;
                 }
             }
 
-            // Lisa tühjadesse kohtadesse uued kivid.
-            for (int row = targetRow; row >= 0; row--)
+            // Ülejäänud kohad jäetakse tühjaks.
+            while (writeRow >= 0)
             {
-                Gems[row, col] = CreateRandomGem();
+                Cells[writeRow, col] = null!;
+                writeRow--;
             }
         }
     }
 
-    public bool HasPossibleMove()
+    private void FillEmptyCells()
     {
-        for (int row = 0; row < Rows; row++)
+        for (int col = 0; col < Cols; col++)
         {
-            for (int col = 0; col < Columns; col++)
+            for (int row = 0; row < Rows; row++)
             {
-                // Kontrolli vahetust paremale.
-                if (col + 1 < Columns)
-                {
-                    Swap(row, col, row, col + 1);
-
-                    bool found =
-                        detector.FindMatches(Gems).Count > 0;
-
-                    Swap(row, col, row, col + 1);
-
-                    if (found)
-                        return true;
-                }
-
-                // Kontrolli vahetust alla.
-                if (row + 1 < Rows)
-                {
-                    Swap(row, col, row + 1, col);
-
-                    bool found =
-                        detector.FindMatches(Gems).Count > 0;
-
-                    Swap(row, col, row + 1, col);
-
-                    if (found)
-                        return true;
-                }
+                if (Cells[row, col] == null)
+                    Cells[row, col] = CreateRandomGem();
             }
         }
-
-        return false;
     }
 }

@@ -1,84 +1,70 @@
-
 using GemApp.Models;
 
 namespace GemApp.GemLogic;
 
-public class MatchDetector
+public static class MatchDetector
 {
-    public HashSet<(int Row, int Col)> FindMatches(Gem?[,] gems)
+    public static HashSet<(int Row, int Col)> FindMatches(
+        Gem[,] cells)
     {
-        int rows = gems.GetLength(0);
-        int cols = gems.GetLength(1);
+        int rows = cells.GetLength(0);
+        int cols = cells.GetLength(1);
 
         var matches = new HashSet<(int Row, int Col)>();
 
-        // Otsi horisontaalseid kombinatsioone.
+        // Horisontaalsed kombinatsioonid
         for (int row = 0; row < rows; row++)
         {
-            int col = 0;
+            int start = 0;
 
-            while (col < cols)
+            while (start < cols)
             {
-                Gem? gem = gems[row, col];
-
-                if (gem == null)
-                {
-                    col++;
-                    continue;
-                }
-
-                int end = col + 1;
+                int end = start + 1;
 
                 while (end < cols &&
-                       gems[row, end]?.Type == gem.Type)
+                       cells[row, end].Type ==
+                       cells[row, start].Type)
                 {
                     end++;
                 }
 
-                if (end - col >= 3)
+                if (end - start >= 3)
                 {
-                    for (int i = col; i < end; i++)
+                    for (int col = start; col < end; col++)
                     {
-                        matches.Add((row, i));
+                        matches.Add((row, col));
                     }
                 }
 
-                col = end;
+                start = end;
             }
         }
 
-        // Otsi vertikaalseid kombinatsioone.
+        // Vertikaalsed kombinatsioonid
         for (int col = 0; col < cols; col++)
         {
-            int row = 0;
+            int start = 0;
 
-            while (row < rows)
+            while (start < rows)
             {
-                Gem? gem = gems[row, col];
-
-                if (gem == null)
-                {
-                    row++;
-                    continue;
-                }
-
-                int end = row + 1;
+                int end = start + 1;
 
                 while (end < rows &&
-                       gems[end, col]?.Type == gem.Type)
+                       cells[end, col].Type ==
+                       cells[start, col].Type)
                 {
                     end++;
                 }
 
-                if (end - row >= 3)
+                if (end - start >= 3)
                 {
-                    for (int i = row; i < end; i++)
+                    for (int row = start; row < end; row++)
                     {
-                        matches.Add((i, col));
+                        matches.Add((row, col));
                     }
                 }
 
-                row = end;
+                start = end;
             }
         }
 

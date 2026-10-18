@@ -1,14 +1,22 @@
-﻿
-namespace GemApp.Models;
+﻿namespace GemApp.Models;
+
+public enum GemType
+{
+    Blue,
+    Green,
+    Red,
+    Yellow,
+    Orange,
+    Purple,
+    Black
+}
 
 public class Gem
 {
-    public string Type { get; private set; }
-    public string Symbol { get; private set; }
+    public GemType Type { get; set; }
 
-    public Gem(string type, string symbol)
+    public Gem(GemType type)
     {
         Type = type;
-        Symbol = symbol;
     }
 }
